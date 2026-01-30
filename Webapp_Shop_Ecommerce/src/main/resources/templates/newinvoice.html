@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:thsec="http://www.thymeleaf.org/extras/spring-security">
+<!-- Customer Information -->
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hóa Đơn</title>
+    <meta http-equiv="Content-Type" content="text/html, charset=utf-8" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900"
+        rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 128%;
+            font-family: 'Roboto', 'Times New Roman', Times, serif;
+        }
+
+        body {
+            font-size: 1.6rem;
+            background-color: #ffffff;
+            width: 100%;
+            position: relative;
+        }
+
+        .main {
+            width: 100vw;
+            max-width: calc(100% - 48px);
+            margin: 0 auto;
+            padding: 20px 0;
+            min-height: 100vh;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .line {
+            border-bottom: 2px dashed black;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        .line_table {
+            border-bottom: 2px dashed black;
+        }
+
+        td,
+        th {
+            padding: 12px 0px;
+        }
+
+        td {
+            background-color: #ffffffb8;
+        }
+
+        .font-bold {
+            font-weight: 500;
+        }
+
+        .font-medium {
+            font-weight: 400;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .basis-1_4 {
+            flex-basis: 25%;
+        }
+
+        .basis-1_2 {
+            flex-basis: 50%;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-6_8rem {
+            font-size: 6.8rem;
+        }
+
+        .text-1_8rem {
+            font-size: 100rem;
+        }
+
+        .text-2rem {
+            font-size: 2rem;
+        }
+
+        .grid-cols {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .justify-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .totalx {
+            margin-top: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <!-- Header Section with Logo and Shop Info -->
+        <div class="line" style="padding-bottom: 20px;">
+            <!-- Shop Information -->
+            <div style="text-align: center; margin-bottom: 12px;">
+                <p style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">PEAK SNEAKER</p>
+                <p style="font-size: 12px; margin-bottom: 2px;">12 Hàm Nghi, phường Cầu Diễn, quận Nam Từ Liêm, TP Hà
+                    Nội</p>
+                <p style="font-size: 12px; margin-bottom: 2px;">SĐT: 0973682004</p>
+                <p style="font-size: 12px;">Email: peaksneakerhn@gmail.com</p>
+            </div>
+
+            <!-- QR Code Section -->
+            <div style="text-align: center;">
+                <img style="width: 100px; height: 100px;"
+                    th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=' + ${billCode}}"
+                    alt="QR Code" />
+            </div>
+        </div>
+
+        <!-- Invoice Details Section -->
+        <div class="line" style="padding-bottom: 16px;">
+            <div style="text-align: center; margin-bottom: 12px;">
+                <p style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">HÓA ĐƠN BÁN HÀNG</p>
+                <p style="font-size: 12px; margin-bottom: 2px;" th:text="${'Ngày tạo: ' + invoiceDate}"></p>
+                <p style="font-size: 12px; font-weight: 600;" th:text="${'Mã Hóa Đơn: ' + billCode}"></p>
+            </div>
+
+            <!-- Customer Information -->
+            <div style="margin-top: 12px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td
+                            style="padding: 4px 0; background-color: transparent; font-size: 12px; font-weight: 600; width: 150px;">
+                            Khách hàng:</td>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px;"
+                            th:text="${receiverName != null ? receiverName : 'Khách lẻ'}"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px; font-weight: 600;">
+                            Địa chỉ:</td>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px;"
+                            th:text="${bill.receiverDetails != null ? (bill.receiverDetails + ', ' + bill.receiverCommune + ', ' + bill.receiverDistrict + ', ' + bill.receiverProvince) : 'N/A'}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px; font-weight: 600;">
+                            Điện thoại:</td>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px;"
+                            th:text="${receiverPhone != null ? receiverPhone : 'N/A'}"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px; font-weight: 600;">
+                            Người lập phiếu:</td>
+                        <td style="padding: 4px 0; background-color: transparent; font-size: 12px;">Vu The Anh</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Product List Section -->
+        <div style="margin-top: 16px;">
+            <p style="text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 10px;">DANH SÁCH SẢN PHẨM
+            </p>
+
+            <table
+                style="width: 100%; border-collapse: collapse; border-top: 2px solid #333; border-bottom: 2px solid #333;">
+                <thead style="background-color: #f3f4f6;">
+                    <tr>
+                        <th
+                            style="padding: 8px 4px; font-size: 12px; font-weight: 600; text-align: center;border-bottom: 1px solid #d1d5db;">
+                            STT</th>
+                        <th
+                            style="padding: 8px 4px; font-size: 12px; font-weight: 600; text-align: left; border-bottom: 1px solid #d1d5db;">
+                            Tên Sản Phẩm</th>
+                        <th
+                            style="padding: 8px 4px; font-size: 12px; font-weight: 600; text-align: right; border-bottom: 1px solid #d1d5db;">
+                            Đơn Giá</th>
+                        <th
+                            style="padding: 8px 4px; font-size: 12px; font-weight: 600; text-align: center; border-bottom: 1px solid #d1d5db;">
+                            SL</th>
+                        <th
+                            style="padding: 8px 4px; font-size: 12px; font-weight: 600; text-align: right; border-bottom: 1px solid #d1d5db;">
+                            Thành Tiền</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr th:each="billDetail, iterStat : ${billDetails}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td
+                            th:text="${billDetail.getProductDetails.getProduct.getName + ' [ ' +  billDetail.getProductDetails.getColor.getName + ' - ' + billDetail.getProductDetails.getSize.getName + ' ]'}">
+                        </td>
+                        <td style="padding: 6px 4px; font-size: 12px; text-align: right;"
+                            th:text="${#numbers.formatDecimal(billDetail.getUnitPrice, 0, 'POINT', 0, 'COMMA')} + ' ₫'">
+                        </td>
+                        <td style="padding: 6px 4px; font-size: 12px; text-align: center;"
+                            th:text="${billDetail.getQuantity}"></td>
+                        <td style="padding: 6px 4px; font-size: 12px; text-align: right; font-weight: 600;"
+                            th:text="${#numbers.formatDecimal(billDetail.getUnitPrice*billDetail.getQuantity, 0, 'POINT', 0, 'COMMA')} + ' ₫'">
+                        </td>
+                        <!--                        <td th:text="${billStatus}"></td>-->
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-top: 6px; font-size: 11px;">
+                Tổng số lượng: <span style="font-weight: 600;" th:text="${Quantity}"></span> sản phẩm
+            </div>
+        </div>
+        <!-- Totals Section -->
+        <div style="margin-top: 20px; border-top: 2px dashed #333; padding-top: 12px;">
+            <table style="width: 100%; max-width: 400px; margin-left: auto;">
+                <tr>
+                    <td
+                        style="padding: 4px 12px 4px 0; font-size: 12px; font-weight: 600; text-align: right; background-color: transparent;">
+                        Tổng tiền hàng:</td>
+                    <td style="padding: 4px 0; font-size: 13px; text-align: right; background-color: transparent; font-weight: 600;"
+                        th:text="${#numbers.formatDecimal(NetTotal, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+                </tr>
+                <tr>
+                    <td
+                        style="padding: 4px 12px 4px 0; font-size: 12px; font-weight: 600; text-align: right; background-color: transparent;">
+                        Giảm giá:</td>
+                    <td style="padding: 4px 0; font-size: 13px; text-align: right; background-color: transparent; color: #dc2626; font-weight: 600;"
+                        th:text="'-' + ${#numbers.formatDecimal(Discount, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+                </tr>
+                <tr>
+                    <td
+                        style="padding: 4px 12px 4px 0; font-size: 12px; font-weight: 600; text-align: right; background-color: transparent;">
+                        Phí giao hàng:</td>
+                    <td style="padding: 4px 0; font-size: 13px; text-align: right; background-color: transparent; font-weight: 600;"
+                        th:text="${#numbers.formatDecimal(Ship, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+                </tr>
+                <tr style="border-top: 1px solid #333;">
+                    <td
+                        style="padding: 8px 12px 4px 0; font-size: 14px; font-weight: 700; text-align: right; background-color: transparent;">
+                        TỔNG CỘNG:</td>
+                    <td style="padding: 8px 0 4px 0; font-size: 16px; font-weight: 700; text-align: right; background-color: transparent; color: #1e3a8a;"
+                        th:text="${#numbers.formatDecimal(Total, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+                </tr>
+            </table>
+
+            <p
+                style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #666; padding-top: 12px;">
+                Cảm ơn quý khách đã mua hàng!
+            </p>
+        </div>
+
+
+    </div>
+</body>
+
+</html>

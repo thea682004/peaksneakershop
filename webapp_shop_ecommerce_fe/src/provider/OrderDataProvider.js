@@ -54,7 +54,7 @@ const OrderDataProvider = ({ children }) => {
         } else {
             setIntoMoney(money);
         }
-    }, [totalPrice, voucherMoney, shipMoney, intoMoney])
+    }, [totalPrice, voucherMoney, shipMoney])
 
 
     useEffect(() => {
@@ -95,13 +95,8 @@ const OrderDataProvider = ({ children }) => {
     //Tiền trả kháhc
     useEffect(() => {
         const money = paymentCustomer - intoMoney;
-        if (money < 0) {
-            setMoneyPaid(0);
-        }
-        else {
-            setMoneyPaid(money);
-        }
-    }, [paymentCustomer])
+        setMoneyPaid(money);
+    }, [paymentCustomer, intoMoney])
 
     const setDataLoadingContent = (data) => {
         setLoadingContent(data);

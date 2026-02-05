@@ -18,6 +18,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useDropzone } from 'react-dropzone'
 import { useParams, useNavigate } from 'react-router-dom'
 import { IoArrowBackSharp } from "react-icons/io5";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 const { TextArea } = Input
@@ -295,12 +297,19 @@ export default function Add() {
                                     {isThumbnailDragActive ? (
                                         <p className="text-red-500">Thả ảnh tại đây.</p>
                                     ) : (
-                                        <div className="flex gap-1">
+                                        <div className="flex gap-1 justify-center items-center w-full h-full">
                                             {originalThumbnail ? (
-                                                <img src={URL.createObjectURL(originalThumbnail.file)} alt='' className='w-full aspect-square rounded-full'></img>
+                                                <img src={URL.createObjectURL(originalThumbnail.file)} alt='' className='w-full h-full aspect-square rounded-full object-cover shadow-sm'></img>
                                             ) : (
                                                 <>
-                                                    <img src={targetUser ? targetUser.imageUrl : ""} alt='' className='w-full aspect-square rounded-full'></img>
+                                                    {targetUser && targetUser.imageUrl ? (
+                                                        <img src={targetUser.imageUrl} alt='' className='w-full h-full aspect-square rounded-full object-cover shadow-sm'></img>
+                                                    ) : (
+                                                        <div className='flex flex-col items-center justify-center text-gray-500 hover:text-blue-500 transition-colors gap-2'>
+                                                            <FontAwesomeIcon icon={faCloudUploadAlt} className='text-3xl mb-1' />
+                                                            <p className='font-semibold text-sm'>Chọn ảnh</p>
+                                                        </div>
+                                                    )}
                                                 </>
                                             )}
                                         </div>
@@ -392,7 +401,7 @@ export default function Add() {
                                                 <FormLabel>Ngày sinh</FormLabel>
                                                 <FormControl>
                                                     <div>
-                                                        <DatePicker {...field} placeholder='ngày sinh' />
+                                                        <DatePicker {...field} placeholder='ngày sinh' format="DD/MM/YYYY" />
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage />

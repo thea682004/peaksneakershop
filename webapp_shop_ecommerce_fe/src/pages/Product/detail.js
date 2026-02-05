@@ -6,6 +6,7 @@ import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import hexToColorName from "~/ultils/HexToColorName";
 import { useDebounce } from '~/hooks';
+import { numberToPrice } from '~/lib/functional';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -134,7 +135,7 @@ function ProductDetail() {
         {
             key: '10',
             label: <span className='text-black'>Ngày Tạo</span>,
-            children: dayjs(product?.createdDate).format('YYYY-MM-DD HH:mm:ss') || 'empty',
+            children: dayjs(product?.createdDate).format('DD/MM/YYYY HH:mm:ss') || 'empty',
         },
 
     ];
@@ -213,7 +214,7 @@ function ProductDetail() {
             key: 'price',
             editable: true,
             width: 200,
-
+            render: (value) => numberToPrice(value),
         },
         {
             title: 'Số Lượng',

@@ -147,7 +147,7 @@ function ProductAdd() {
         }
         ,
         {
-            title: 'Màu Sắc',
+            title: 'Màu sắc',
             dataIndex: 'color',
             key: 'color',
             render: (color) => <>
@@ -162,14 +162,14 @@ function ProductAdd() {
 
         },
         {
-            title: 'Kích Thước',
+            title: 'Kích thước',
             dataIndex: 'size',
             key: 'size',
             render: (size) => <span>{size.name}</span>
 
         },
         {
-            title: 'Đơn Giá',
+            title: 'Đơn giá',
             dataIndex: 'price',
             key: 'price',
             render: (text, record) => (
@@ -184,7 +184,7 @@ function ProductAdd() {
             ),
         },
         {
-            title: 'Số Lượng',
+            title: 'Số lượng',
             dataIndex: 'quantity',
             key: 'quantity',
             render: (text, record) => (
@@ -195,7 +195,7 @@ function ProductAdd() {
         }
         ,
         {
-            title: 'Khối Lượng',
+            title: 'Khối lượng',
             dataIndex: 'weight',
             key: 'weight',
             render: (text, record) => (
@@ -214,7 +214,7 @@ function ProductAdd() {
                     title="Loại bỏ chi tiết"
                     description="Bạn có chắc muốn loại bỏ chi tiết này khỏi khay tạm?"
                     onConfirm={() => handleDeleteProduct(record.key)}
-                    okText="Xác Nhận"
+                    okText="Xác nhận"
                     cancelText="Không"
                 >
                     <Button danger >
@@ -912,7 +912,7 @@ function ProductAdd() {
             <div>
                 <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
                     <div className='mb-10 mt-2 '>
-                        <div className='text-[16px] font-semibold	'>Thông Tin Cơ Bản</div>
+                        <div className='text-[16px] font-semibold	'>Thông tin cơ bản</div>
                     </div>
 
                     <div className='flex items-end mt-4	mb-10'>
@@ -976,7 +976,7 @@ function ProductAdd() {
                                                 className="placeholder flex flex-col justify-center items-center"
                                             >
                                                 <PlusOutlined className="text-4xl" />
-                                                <span className="mt-2">Ảnh Bìa</span>
+                                                <span className="mt-2">Ảnh bìa</span>
                                             </div>
                                         )}
                                         {(isLoadingAvatar &&
@@ -1019,20 +1019,20 @@ function ProductAdd() {
                         </div>
                         <div className='w-3/4	'>
                             <div>
-                                <label>Mã Sản Phẩm</label>
-                                <Input className="my-4" placeholder="Nhập Mã Sản Phẩm" value={valueCodeProduct} onChange={e => setValueCodeProduct(e.target.value)} />
+                                <label>Mã sản phẩm</label>
+                                <Input className="my-4" placeholder="Nhập mã sản phẩm" value={valueCodeProduct} onChange={e => setValueCodeProduct(e.target.value)} />
                             </div>
 
                             <div>
-                                <label>Tên Sản Phẩm</label>
-                                <Input className="my-4" placeholder="Nhập Tên Sản Phẩm" value={valueNameProduct} onChange={e => setValueNameProduct(e.target.value)} />
+                                <label>Tên sản phẩm</label>
+                                <Input className="my-4" placeholder="Nhập tên sản phẩm" value={valueNameProduct} onChange={e => setValueNameProduct(e.target.value)} />
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <label>Mô Tả Sản Phẩm</label>
-                        <TextArea className="my-4" rows={4} placeholder="Nhập Mô Tả Sản Phẩm" maxLength={350} value={valueDecProduct} onChange={e => setValueDecProduct(e.target.value)} />
+                        <label>Mô tả sản phẩm</label>
+                        <TextArea className="my-4" rows={4} placeholder="Nhập mô tả sản phẩm" maxLength={350} value={valueDecProduct} onChange={e => setValueDecProduct(e.target.value)} />
                     </div>
                 </div>
 
@@ -1040,13 +1040,13 @@ function ProductAdd() {
 
                 <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
                     <div className='mb-6 mt-2 '>
-                        <div className='text-[16px] font-semibold	'>Thông Tin Chi Tiết</div>
+                        <div className='text-[16px] font-semibold	'>Thông tin chi tiết</div>
                     </div>
 
                     <div className='grid grid-cols-4 gap-4 my-4'>
                         <div>
                             <label>Loại</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Loại"
+                            <Select className="w-full mt-4" placeholder="Chọn"
 
                                 dropdownRender={(menu) => (
                                     <>
@@ -1073,8 +1073,8 @@ function ProductAdd() {
                         </div>
 
                         <div>
-                            <label>Chất Liệu</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Chất Liệu"
+                            <label>Chất liệu</label>
+                            <Select className="w-full mt-4" placeholder="Chọn"
                                 dropdownRender={(menu) => (
                                     <>
                                         {menu}
@@ -1101,8 +1101,8 @@ function ProductAdd() {
                         </div>
 
                         <div>
-                            <label>Phong Cách</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Phong Cách"
+                            <label>Phong cách</label>
+                            <Select className="w-full mt-4" placeholder="Chọn"
                                 dropdownRender={(menu) => (
                                     <>
                                         {menu}
@@ -1129,8 +1129,8 @@ function ProductAdd() {
                         </div>
 
                         <div>
-                            <label>Thương Hiệu</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Thương Hiệu"
+                            <label>Thương hiệu</label>
+                            <Select className="w-full mt-4" placeholder="Chọn"
                                 dropdownRender={(menu) => (
                                     <>
                                         {menu}
@@ -1162,14 +1162,14 @@ function ProductAdd() {
 
                 <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
                     <div className='mb-6 mt-2 '>
-                        <div className='text-[16px] font-semibold	'>Thuộc Tính Sản Phẩm</div>
+                        <div className='text-[16px] font-semibold	'>Thuộc tính sản phẩm</div>
                     </div>
 
                     <div className='grid grid-cols-2 gap-2 my-4'>
 
                         <div>
-                            <label>Màu Sắc</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Màu Sắc"
+                            <label>Màu sắc</label>
+                            <Select className="w-full mt-4" placeholder="Chọn"
                                 mode="multiple"
 
                                 tagRender={tagRender}
@@ -1209,8 +1209,8 @@ function ProductAdd() {
                         </div>
 
                         <div>
-                            <label>Kích Thước</label>
-                            <Select className="w-full mt-4" placeholder="Chọn Kích Thước"
+                            <label>Kích thước</label>
+                            <Select className="w-full mt-4" placeholder="Chọn"
                                 mode="multiple"
                                 dropdownRender={(menu) => (
                                     <>
@@ -1240,25 +1240,25 @@ function ProductAdd() {
 
                 <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
                     <div className='mb-6 mt-2 '>
-                        <div className='text-[16px] font-semibold'>Chi Tiết Sản Phẩm</div>
+                        <div className='text-[16px] font-semibold'>Chi tiết sản phẩm</div>
                     </div>
 
                     <div className='mt-2 flex justify-between	'>
-                        <Button className='mr-4' type="primary" onClick={handleAddProduct}>Thêm Sản Phẩm</Button>
-                        <Button type="primary" onClick={showModal}>Áp Dụng Chung Cho Các Phân Loại</Button>
-                        <> <Modal title="Áp Dụng Chung Cho Các Phân Loại" okText="Cập Nhật" open={isModalOpen}
+                        <Button className='mr-4' type="primary" onClick={handleAddProduct}>Thêm sản phẩm</Button>
+                        <Button type="primary" onClick={showModal}>Áp dụng chung cho các phân loại</Button>
+                        <> <Modal title="Áp dụng chung cho các phân loại" okText="Cập nhật" open={isModalOpen}
                             onOk={onChangeQuantityPriceCustom}
                             onCancel={handleCancelModal}>
                             <div>
-                                <label>Đơn Giá</label>
-                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập Đơn Giá"
+                                <label>Đơn giá</label>
+                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập đơn giá"
                                     value={valueInputPriceCustom}
                                     onChange={(value) => { setValueInputPriceCustom(value) }}
                                 ></InputNumber>
                             </div>
                             <div>
-                                <label>Số Lượng</label>
-                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập Số Lượng"
+                                <label>Số lượng</label>
+                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập số lượng"
                                     value={valueInputQuantityCustom}
                                     onChange={(value) => { setValueInputQuantityCustom(value) }}
                                 ></InputNumber>
@@ -1266,8 +1266,8 @@ function ProductAdd() {
 
 
                             <div>
-                                <label>Khối Lượng</label>
-                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập Khối Lượng"
+                                <label>Khối lượng</label>
+                                <InputNumber className='mt-2 mb-2 w-full' placeholder="Nhập khối lượng"
                                     value={valueInputWeightCustom}
                                     onChange={(value) => { setValueInputWeightCustom(value) }}
                                 ></InputNumber>

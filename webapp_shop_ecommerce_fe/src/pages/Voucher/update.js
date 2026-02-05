@@ -360,7 +360,7 @@ const VoucherPage = () => {
 
                                     <div className='mt-1'>
                                         <FormLabel>Ngày bắt đầu {"->"} Ngày kết thúc</FormLabel>
-                                        <RangePicker className='w-full' value={date} onChange={(val) => { if (val) { setDate(val) } }} showTime />
+                                        <RangePicker className='w-full' value={date} onChange={(val) => { if (val) { setDate(val) } }} showTime format="DD/MM/YYYY HH:mm:ss" />
                                     </div>
                                     <div className='flex gap-4'>
                                         <Button type="primary" onClick={() => { handleSubmitForm(form.getValues()) }}>Cập nhật</Button>

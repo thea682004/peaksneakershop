@@ -1,5 +1,5 @@
-import { Tag, Checkbox, Button, Input } from 'antd/lib'
-import { useState, useEffect, useMemo } from "react"
+import { Checkbox, Button, Input } from 'antd/lib'
+import { useState, useMemo } from "react"
 import {
     CaretSortIcon,
 } from "@radix-ui/react-icons"
@@ -11,30 +11,20 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { useAppSelector } from '../../redux/storage'
-import { set, updateSelected, toggleChildren } from '../../redux/features/promotion-selected-item'
+import { set, updateSelected } from '../../redux/features/promotion-selected-item'
 import { useDispatch } from "react-redux";
-import Table from '../../components/ui/table'
 import { ReduceString } from '../../lib/functional'
-import HexToColor from '../../ultils/HexToColorName'
-export default function ListTable({ data }) {
+
+export default function ListTable({ data, onRowClick, activeProductId }) {
     const [sorting, setSorting] = useState([])
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
 
-    const [open, setOpen] = useState({});
     const dispatch = useDispatch();
 
     const selectedProduct = useAppSelector((state) => state.promotionReducer.value.selected)
-
-    const handleToggleOpen = (id) => {
-        setOpen((prevOpen) => ({
-            ...prevOpen,
-            [id]: !prevOpen[id]
-        }));
-    };
 
     const columns = useMemo(() => [
         {
@@ -43,35 +33,48 @@ export default function ListTable({ data }) {
                 <div className='flex justify-center'>
                     <Checkbox
                         checked={
-                            selectedProduct.every(target => target.selected)
+                            selectedProduct.length > 0 && selectedProduct.every(target => target.selected)
                         }
-                        onChange={(value) => dispatch(set({
-                            value: {
-                                selected: data.map(product => {
-                                    return {
-                                        id: product.id, selected: !!value.target.checked, children: product.lstProductDetails.map(detail => {
-                                            return { id: detail.id, selected: !!value.target.checked }
-                                        })
-                                    }
-                                })
+                        onChange={(value) => {
+                            dispatch(set({
+                                value: {
+                                    selected: data.map(product => {
+                                        return {
+                                            id: product.id, selected: !!value.target.checked, children: product.lstProductDetails.map(detail => {
+                                                return { id: detail.id, selected: !!value.target.checked }
+                                            })
+                                        }
+                                    })
+                                }
+                            }))
+                            if (value.target.checked && data.length > 0 && onRowClick) {
+                                onRowClick(data[0])
                             }
-                        }))}
+                        }}
                         aria-label="Select all"
                     />
                 </div>
             ),
             cell: ({ row }) => (
-                <div className='flex justify-center'>
+                <div className='flex justify-center' onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                         disabled={!!selectedProduct.find(pro => pro.id == row.original.id)?.disable}
-                        defaultChecked={(selectedProduct.find(value => value.id == row.original.id)?.selected || false)}
-                        onChange={(value) => { dispatch(updateSelected({ id: row.original.id, selected: !!value.target.checked })) }}
+                        checked={(selectedProduct.find(value => value.id == row.original.id)?.selected || false)}
+                        onChange={(value) => {
+                            dispatch(updateSelected({ id: row.original.id, selected: !!value.target.checked }))
+                            if (onRowClick) onRowClick(row.original)
+                        }}
                         aria-label="Select row"
                     />
                 </div>
             ),
             enableSorting: false,
             enableHiding: false,
+        },
+        {
+            id: "stt",
+            header: () => <div className="text-center">STT</div>,
+            cell: ({ row }) => <div className="text-center text-xl">{row.index + 1}</div>,
         },
         {
             accessorKey: "name",
@@ -89,33 +92,24 @@ export default function ListTable({ data }) {
             cell: ({ row }) => <div className="lowercase text-xl">{ReduceString({ string: row.original.name, maxLength: 20 })}</div>,
         },
         {
-            accessorKey: "image",
-            header: () => <div className="text-center">Ảnh</div>,
+            accessorKey: "style",
+            header: () => <div className="text-center">Phong cách</div>,
             cell: ({ row }) => {
                 return (<div className='flex justify-center text-xl'>
-                    {row.original.imageUrl ? <img src={row.original.imageUrl.split(" | ")[0]} alt='' className='w-16 aspect-square'></img> : "Không có"}
+                    {row.original.style ? row.original.style.name : "Không có"}
                 </div>)
             },
         },
         {
-            accessorKey: "giá",
+            accessorKey: "brand",
             header: ({ column }) => {
                 return (
-                    <div className='flex justify-center'>Giá</div>
+                    <div className='flex justify-center'>Thương hiệu</div>
                 )
             },
-            cell: ({ row }) => <div className="lowercase text-center text-xl">{minMaxPrice(row.original.lstProductDetails)}</div>,
+            cell: ({ row }) => <div className="lowercase text-center text-xl">{row.original.brand ? row.original.brand.name : "Không có"}</div>,
         },
-        {
-            id: "accordion",
-            header: () => <div className="text-center">Chi tiết</div>,
-            cell: ({ row }) => (
-                <div className='flex justify-center text-xl' onClick={() => handleToggleOpen(row.original.id)}>{!!open[row.original.id] ? <FaAngleUp /> : <FaAngleDown />}</div>
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
-    ], [data, dispatch, open, selectedProduct]);
+    ], [data, dispatch, selectedProduct, onRowClick]);
 
     const table = useReactTable({
         data,
@@ -165,33 +159,24 @@ export default function ListTable({ data }) {
                         <tbody className="bg-slate-50 divide-y divide-gray-200">
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
-                                    <>
-                                        <tr
-                                            key={row.id}
-                                            className={row.getIsSelected() ? "bg-blue-100" : ""}
-                                        >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <td
-                                                    key={cell.id}
-                                                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                                                >
-                                                    {flexRender(
-                                                        cell.column.columnDef.cell,
-                                                        cell.getContext()
-                                                    )}
-                                                </td>
-                                            ))
-                                            }
-                                        </tr>
-                                        <tr key={`${row.id}-details`} className={`${open[row.original.id] ? '' : 'hidden'}`}>
-                                            <td colSpan={columns.length} className="py-4">
-                                                <ProductDetailTable
-                                                    targetDataId={row.original.id}
-                                                    belowData={row.original.lstProductDetails}
-                                                />
+                                    <tr
+                                        key={row.id}
+                                        className={`cursor-pointer ${row.original.id === activeProductId ? "bg-blue-200" : "hover:bg-slate-100"}`}
+                                        onClick={() => onRowClick && onRowClick(row.original)}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td
+                                                key={cell.id}
+                                                className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                            >
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
                                             </td>
-                                        </tr>
-                                    </>
+                                        ))
+                                        }
+                                    </tr>
                                 ))
                             ) : (
                                 <tr>
@@ -228,114 +213,6 @@ export default function ListTable({ data }) {
                             Next
                         </Button>
                     </div>
-                </div>
-            </div>
-        </>
-    )
-}
-
-
-
-const ProductDetailTable = ({ belowData, targetDataId }) => {
-    const [belowSorting, setBelowSorting] = useState([])
-    const [belowColumnFilters, setBelowColumnFilters] = useState([])
-    const [belowColumnVisibility, setBelowColumnVisibility] = useState({})
-    const [belowRowSelection, setBelowRowSelection] = useState({})
-
-    const selectedProduct = useAppSelector((state) => state.promotionReducer.value.selected);
-
-    const dispatch = useDispatch();
-
-    const belowColumns = useMemo(() => [
-        {
-            id: "select",
-            header: ({ table }) => (
-                <div></div>
-            ),
-            cell: ({ row }) => (
-                <div className='flex justify-center'>
-                    <Checkbox
-                        checked={selectedProduct.find(slt => slt.id == targetDataId) && selectedProduct.find(slt => slt.id == targetDataId).children.find(child => { return child.id == row.original.id })?.selected}
-                        onClick={(value) => { dispatch(toggleChildren({ id: row.original.id, parentId: targetDataId, value: !!value.target.checked })) }}
-                        aria-label="Select row"
-                    />
-                </div>
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
-        {
-            accessorKey: "imageUrl",
-            header: () => <div className="text-center">Ảnh</div>,
-            cell: ({ row }) => {
-                return <div className="text-center flex justify-center font-medium max-h-16 text-xl">
-                    {row.original.imageUrl ? <img className="w-16 aspect-square" src={row.original.imageUrl.split("|")[0]}></img> : "không có"}
-                </div>
-            },
-        },
-        {
-            accessorKey: "size",
-            header: ({ column }) => {
-                return (
-                    <div className='text-center flex items-center justify-center'>Kích cỡ</div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center text-xl">{row.original.size.name}</div>,
-        },
-        {
-            accessorKey: "color",
-            header: () => <div className="text-center">Màu sắc</div>,
-            cell: ({ row }) => {
-
-                return <div className='flex justify-center items-center'>
-                    <div className={`text-center font-medium rounded-md py-2 text-slate-200 text-xl max-w-32 px-4`} style={{ backgroundColor: row.original.color.name }}>{HexToColor(row.original.color.name)}</div>
-                </div>
-            },
-        },
-        {
-            accessorKey: "price",
-            header: () => <div className="text-center">Giá</div>,
-            cell: ({ row }) => {
-
-                return <div className="text-center font-medium text-xl">{numberToPrice(row.original.price)}</div>
-            },
-        },
-    ], [dispatch, selectedProduct, targetDataId]);
-
-    const belowTable = useReactTable({
-        data: belowData,
-        columns: belowColumns,
-        onSortingChange: setBelowSorting,
-        onColumnFiltersChange: setBelowColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setBelowColumnVisibility,
-        onRowSelectionChange: setBelowRowSelection,
-        state: {
-            sorting: belowSorting,
-            columnFilters: belowColumnFilters,
-            columnVisibility: belowColumnVisibility,
-            rowSelection: belowRowSelection,
-        },
-    })
-
-    useEffect(() => {
-        const keysArray = Object.keys(belowRowSelection).map(Number);
-        if (keysArray.length > 0) {
-            keysArray.map(key => {
-                dispatch(toggleChildren({ id: belowTable.getRow(key.toString()).original.id, parentId: targetDataId, value: true }))
-            })
-        }
-    }, [belowRowSelection, belowTable, dispatch, targetDataId])
-
-
-    return (
-        <>
-            <div className="mr-4">
-                <div className="rounded-md border">
-                    {Table(belowTable, flexRender, belowColumns)}
                 </div>
             </div>
         </>

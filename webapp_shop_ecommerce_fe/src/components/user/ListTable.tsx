@@ -28,6 +28,9 @@ import { toast, ToastContainer } from 'react-toastify'
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { set } from '../../redux/features/voucher-deleted'
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+const dayjs = require('dayjs');
 
 const { confirm } = Modal;
 
@@ -97,7 +100,7 @@ export default function ListTable() {
             id: "#",
             header: () => <div className="text-center">#</div>,
             cell: ({ row }) => {
-                return <div className='text-center text-xl'>
+                return <div className='text-center text-lg'>
                     {row.index + 1}
                 </div>
             },
@@ -115,13 +118,13 @@ export default function ListTable() {
                     </div>
                 )
             },
-            cell: ({ row }) => <div className=" text-xl">{row.original.fullName}</div>,
+            cell: ({ row }) => <div className=" text-lg">{row.original.fullName}</div>,
         },
         {
             accessorKey: "phone",
             header: () => <div className="text-center">Số điện thoại</div>,
             cell: ({ row }) => {
-                return <div className="text-center font-medium max-h-16 text-xl">
+                return <div className="text-center font-medium max-h-16 text-lg">
                     {row.original.phone}
                 </div>
             },
@@ -130,7 +133,7 @@ export default function ListTable() {
             accessorKey: "email",
             header: () => <div className="text-center">Email</div>,
             cell: ({ row }) => {
-                return <div className='text-center text-xl'>
+                return <div className='text-center text-lg'>
                     {row.original.email}
                 </div>
             },
@@ -139,8 +142,8 @@ export default function ListTable() {
             accessorKey: "birthday",
             header: () => <div className="text-center">Ngày sinh</div>,
             cell: ({ row }) => {
-                return <div className='text-center text-xl'>
-                    {row.original.birthday && row.original.birthday.toString().split("T")[0]}
+                return <div className='text-center text-lg'>
+                    {row.original.birthday && dayjs(row.original.birthday).format('DD/MM/YYYY')}
                 </div>
             },
         },
@@ -268,19 +271,36 @@ export default function ListTable() {
 
     return (
         <>
-            <div className="w-full rounded-md bg-white p-6 flex flex-col gap-3">
+            <style>
+                {`
+                  .ant-radio-checked .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                    background-color: #1e3a8a !important;
+                  }
+                  .ant-radio:hover .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                  }
+                  .ant-radio-wrapper:hover .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                  }
+                `}
+            </style>
+            <div className="w-full rounded-md bg-white p-6 flex flex-col gap-3" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
                 <ToastContainer />
                 <div className='flex justify-between items-center'>
-                    <p className='text-2xl font-bold'>Nhân viên</p>
+                    <p className='text-2xl font-bold' style={{ color: '#1e3a8a' }}>
+                        <FontAwesomeIcon icon={faUserTie as any} style={{ marginRight: '12px' }} />
+                        Nhân viên
+                    </p>
                 </div>
                 <div className='bg-slate-600 h-[2px]'></div>
-                <div className='bg-white rounded-md mb-3 p-3 shadow-md'>
+                <div className='bg-white rounded-md mb-3 p-3 shadow-md' style={{ backgroundColor: '#fefce8' }}>
 
                     <div className="grid grid-cols-2 gap-3 my-3">
                         <div className='my-2'>
-                            <p className='text-xl font-semibold mb-2'>Họ và tên</p>
+                            <p className='text-base font-semibold mb-2'>Họ và tên</p>
                             <Input
-                                placeholder="tìm kiếm theo tên"
+                                placeholder="Tìm kiếm theo tên"
                                 value={(table.getColumn("fullName")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("fullName")?.setFilterValue(event.target.value)
@@ -289,9 +309,9 @@ export default function ListTable() {
                             />
                         </div>
                         <div className='my-2'>
-                            <p className='text-xl font-semibold mb-2'>Email</p>
+                            <p className='text-base font-semibold mb-2'>Email</p>
                             <Input
-                                placeholder="tìm kiếm theo email"
+                                placeholder="Tìm kiếm theo email"
                                 value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("email")?.setFilterValue(event.target.value)
@@ -300,9 +320,9 @@ export default function ListTable() {
                             />
                         </div>
                         <div className='my-2'>
-                            <p className='text-xl font-semibold mb-2'>Số điện thoại</p>
+                            <p className='text-base font-semibold mb-2'>Số điện thoại</p>
                             <Input
-                                placeholder="tìm kiếm theo số điện thoại"
+                                placeholder="Tìm kiếm theo số điện thoại"
                                 value={(table.getColumn("phone")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("phone")?.setFilterValue(event.target.value)
@@ -311,7 +331,7 @@ export default function ListTable() {
                             />
                         </div>
                         <div className='my-2'>
-                            <p className='text-xl font-semibold mb-2'>Trạng thái</p>
+                            <p className='text-base font-semibold mb-2'>Trạng thái</p>
                             <Radio.Group name="radiogroup" defaultValue={"0"} value={(table.getColumn("status")?.getFilterValue() as string) ?? "0"} onChange={e => { table.getColumn("status")?.setFilterValue(e.target.value) }}>
                                 <Radio value={"0"}>Tất cả</Radio>
                                 <Radio value={"1"}>Đang làm việc</Radio>
@@ -320,17 +340,17 @@ export default function ListTable() {
                         </div>
                     </div>
                     <div className='flex gap-5 items-center justify-between pr-2 my-4'>
-                        <Button type="primary" onClick={() => { navigate('/user/staff/add') }} variant="outline">Thêm nhân viên</Button>
+                        <Button style={{ backgroundColor: '#ea580c', borderColor: '#ea580c' }} type="primary" onClick={() => { navigate('/user/staff/add') }} variant="outline">Thêm nhân viên mới</Button>
                         {/* {Recover()} */}
                     </div>
                 </div>
-                <div className="rounded-md border p-3 bg-white shadow-md flex flex-col gap-2">
-                    <p className='text-2xl font-bold'>Danh sách nhân viên</p>
+                <div className="rounded-md border p-3 bg-white shadow-md flex flex-col gap-2" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                    <p className='text-2xl font-bold' style={{ color: '#1e3a8a' }}>Danh sách nhân viên</p>
                     <div className='h-[2px] bg-slate-600'></div>
                     {Table(table, flexRender, columns)}
                 </div>
                 <div className="flex items-center justify-end space-x-2 py-4">
-                    <div className="flex-1 text-xl text-muted-foreground">
+                    <div className="flex-1 text-lg text-muted-foreground">
                         {table.getFilteredSelectedRowModel().rows.length} of{" "}
                         {table.getFilteredRowModel().rows.length} row(s) selected.
                     </div>

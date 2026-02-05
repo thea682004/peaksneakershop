@@ -172,7 +172,7 @@ function EditPage() {
                         </label>
                         <label>
                             <p className='mb-1 text-xl text-slate-600'>Ngày bắt đầu {"->"} ngày kết thúc</p>
-                            <RangePicker className='w-full' value={date} onChange={(val) => { setDate(val) }} showTime />
+                            <RangePicker className='w-full' value={date} onChange={(val) => { setDate(val) }} showTime format="DD/MM/YYYY HH:mm:ss" />
                         </label>
                         <Button onClick={() => { handleSubmitForm() }} type='primary' className='bg-blue-500'>
                             {'Cập nhật'}

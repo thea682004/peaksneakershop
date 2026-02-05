@@ -15,7 +15,9 @@ import User from '~/pages/User'
 import UserAdd from '~/pages/User/add'
 import UserUpdate from '~/pages/User/update'
 import UserDetail from '~/pages/User/detail'
-import Home from '~/pages/Home';
+import Dashboard from '~/pages/Dashboard';
+import Statistics from '~/pages/Statistics';
+import SupportChat from '~/pages/SupportChat';
 import Default from '~/pages/Default';
 import PaymentIpn from '~/pages/PaymenIpn';
 
@@ -34,12 +36,21 @@ import CustomerDetail from '~/pages/Customer/detail'
 import CustomerAdd from '~/pages/Customer/add'
 import CustomerUpdate from '~/pages/Customer/update'
 import LoginPage from '../pages/Login';
+import RegisterPage from '../pages/Register';
+import ForgotPasswordPage from '../pages/ForgotPassword';
+import ResetPasswordPage from '../pages/ResetPassword';
+
 const publicRouter = [
     { path: '/login', component: LoginPage },
+    { path: '/register', component: RegisterPage },
+    { path: '/forgot-password', component: ForgotPasswordPage },
+    { path: '/reset-password', component: ResetPasswordPage },
 ];
 
 const privateRouter = [
-    { path: '/', component: Home },
+    { path: '/', component: Dashboard },
+    { path: '/statistics', component: Statistics },
+    { path: '/support-chat', component: SupportChat },
     { path: '/product', component: Product },
     { path: '/product/:id', component: ProductDetail },
     { path: '/product/add', component: ProductAdd },

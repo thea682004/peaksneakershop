@@ -214,7 +214,7 @@ function OrderCustomer() {
                                         <div>
                                             <label>Ngày Sinh</label>
                                         </div>
-                                        <DatePicker className='mt-2 mb-4' onChange={handleChangeBirthday} format="YYYY-MM-DD" // Specify the desired format
+                                        <DatePicker className='mt-2 mb-4' onChange={handleChangeBirthday} format="DD/MM/YYYY" // Specify the desired format
                                             value={dayjs(customerAdd.birthday)} />
                                     </div>
                                     <div>

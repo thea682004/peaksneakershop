@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Input, Modal, Popconfirm, Form } from 'antd';
 import axios from 'axios';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCube } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DeleteOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
@@ -32,24 +32,24 @@ function Material() {
             align: 'center',
         },
         {
-            title: 'Ngày Tạo',
+            title: 'Ngày tạo',
             dataIndex: 'createdDate',
             key: 'createdDate',
             align: 'center',
             render: (text, record, index) => (
                 <React.Fragment key={index}>
-                    <span> {dayjs(record.createdDate).format('DD-MM-YYYY')}</span>
+                    <span> {dayjs(record.createdDate).format('DD/MM/YYYY')}</span>
                 </React.Fragment>
             ),
         },
         {
-            title: 'Action',
+            title: 'Hành động',
             dataIndex: 'action',
             key: 'action',
             align: 'center',
             render: (text, record, index) => (
                 <React.Fragment key={index}>
-                    <Button type="primary" onClick={() => showModal(record)}>
+                    <Button style={{ backgroundColor: '#1e3a8a', borderColor: '#1e3a8a' }} type="primary" onClick={() => showModal(record)}>
                         <FontAwesomeIcon icon={faPen} />
                     </Button>
                 </React.Fragment>
@@ -172,20 +172,25 @@ function Material() {
 
     return (
         <>
-            <h3>Quản Lý Chất Liệu</h3>
-            <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
-                <label>Tìm Kiếm</label>
-                <Input className='mt-4 mb-4' type="text" placeholder='Nhập value cần tìm' onChange={(e) => handleSearch(e.target.value)} />
+            <div className='p-4 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                <h3 style={{ color: '#1e3a8a', marginBottom: 0 }}>
+                    <FontAwesomeIcon icon={faCube} style={{ marginRight: '12px' }} />
+                    Quản lý chất liệu
+                </h3>
+            </div>
+            <div className='bg-white p-4 mt-4 mb-10 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                <label className='font-semibold' style={{ color: '#1e3a8a' }}>Tìm kiếm</label>
+                <Input className='mt-4 mb-4' type="text" placeholder='Nhập giá trị cần tìm' onChange={(e) => handleSearch(e.target.value)} />
             </div>
 
-            <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
+            <div className='bg-white p-4 mt-4 mb-10 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
                 <div className='mb-4 flex justify-between	'>
-                    <div className='text-[16px] font-semibold'>
-                        Danh Sách
+                    <div className='text-base font-semibold' style={{ color: '#1e3a8a' }}>
+                        Danh sách
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
-                        <Button type="primary" onClick={showModalAdd}>
-                            Thêm Mới
+                        <Button style={{ backgroundColor: '#ea580c', borderColor: '#ea580c' }} type="primary" onClick={showModalAdd}>
+                            Thêm mới
                         </Button>
                         <Modal title="Thêm Mới" open={isModalOpenAdd} footer={null} onCancel={handleCancelAdd}>
                             <div>
@@ -276,7 +281,7 @@ function Material() {
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button danger  className='ml-4'> <DeleteOutlined /> Xóa</Button>
+                                <Button danger className='ml-4'> <DeleteOutlined /> Xóa</Button>
                             </Popconfirm>
                         </div>
 

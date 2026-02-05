@@ -350,7 +350,7 @@ export default function ListTable() {
                     </div>
                     <div>
                         <p className='mb-3 font-semibold text-xl'>Khoảng ngày</p>
-                        <RangePicker placeholder={["Ngày bắt đầu", "Ngày kết thúc"]} className='w-2/3' onChange={value => {
+                        <RangePicker placeholder={["Ngày bắt đầu", "Ngày kết thúc"]} className='w-2/3' format="DD/MM/YYYY" onChange={value => {
                             table.getColumn("startDate").setFilterValue(value ? value[0].hour(0).minute(0).second(0) : null);
                             table.getColumn("endDate").setFilterValue(value ? value[1].hour(23).minute(59).second(59) : null)
                         }} />

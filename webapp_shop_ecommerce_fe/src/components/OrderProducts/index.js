@@ -325,7 +325,7 @@ function OrderProducts() {
                         {data?.productDetails.imageUrl && (
                             <div className='relative'>
 
-                                <Carousel dots={false} autoplay className='flex justify-center' autoplaySpeed={2000} style={{ width: '80px', height: '100px',  overflow: 'hidden' }}>
+                                <Carousel dots={false} autoplay className='flex justify-center' autoplaySpeed={2000} style={{ width: '80px', height: '100px', overflow: 'hidden' }}>
                                     {data.productDetails.imageUrl.split("|").map((imageUrl, index) => (
                                         <img src={imageUrl} key={index} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Image ${index}`} />
                                     ))}
@@ -421,7 +421,7 @@ function OrderProducts() {
                         <div className='flex'>
                             {data?.imageUrl && (
                                 <div className='relative'>
-                                    <Carousel dots={false} autoplay className='flex justify-center' autoplaySpeed={2000} style={{ width: '80px', height: '100px',  overflow: 'hidden' }}>
+                                    <Carousel dots={false} autoplay className='flex justify-center' autoplaySpeed={2000} style={{ width: '80px', height: '100px', overflow: 'hidden' }}>
                                         {data.imageUrl.split("|").map((imageUrl, index) => (
                                             <img src={imageUrl} key={index} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={`Image ${index}`} />
                                         ))}
@@ -600,7 +600,7 @@ function OrderProducts() {
             updateDataProductDetails();
         } catch (error) {
             console.error('API error:', error);
-            toast.error(error.response.data.message||"Thất bại");
+            toast.error(error.response.data.message || "Thất bại");
         }
     }
 
@@ -780,7 +780,7 @@ function OrderProducts() {
 
                                     <Button type='primary' className='ml-4' onClick={() => setOpenAddProduct(true)}><FontAwesomeIcon icon={faPlus} /> <span className='ml-2'>Thêm Sản Phẩm</span> </Button>
                                 </div>
-                            
+
 
 
                                 <>
@@ -919,7 +919,7 @@ function OrderProducts() {
                             ) : (
                                 <div>
                                     <Table
-
+                                        className='pos-cart-table custom-table'
                                         pagination={{
                                             pageSize: 10,
                                         }}

@@ -23,9 +23,11 @@ import { FaEdit, FaEye, FaTrash } from 'react-icons/fa';
 import ListDeleted from '~/components/promotion/listDeleted';
 import { useAppSelector } from '../../redux/storage';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGift } from '@fortawesome/free-solid-svg-icons';
+const dayjs = require('dayjs');
 
 const { confirm } = Modal;
-const dayjs = require('dayjs');
 const { RangePicker } = DatePicker;
 export default function ListTable() {
     const [openModal, setOpenModal] = useState(false);
@@ -93,13 +95,13 @@ export default function ListTable() {
             {
                 accessorKey: 'id',
                 header: '#',
-                cell: ({ row }) => <div className="capitalize text-xl text-center">{row.index + 1}</div>,
+                cell: ({ row }) => <div className="capitalize text-lg text-center">{row.index + 1}</div>,
             },
             {
                 accessorKey: 'code',
                 header: () => <div className="text-center">Mã chương trình</div>,
                 cell: ({ row }) => {
-                    return <div className="text-center font-medium max-h-16 text-xl">{row.original.code}</div>;
+                    return <div className="text-center font-medium max-h-16 text-lg">{row.original.code}</div>;
                 },
             },
             {
@@ -115,14 +117,14 @@ export default function ListTable() {
                         </div>
                     );
                 },
-                cell: ({ row }) => <div className="lowercase text-xl">{row.getValue('name')}</div>,
+                cell: ({ row }) => <div className="lowercase text-lg">{row.getValue('name')}</div>,
             },
             {
                 accessorKey: 'value',
                 header: () => <div className="text-center">Giá trị giảm</div>,
                 cell: ({ row }) => {
                     return (
-                        <div className="text-center font-medium max-h-16 text-xl">{row.getValue('value') + '%'}</div>
+                        <div className="text-center font-medium max-h-16 text-lg">{row.getValue('value') + '%'}</div>
                     );
                 },
             },
@@ -132,10 +134,8 @@ export default function ListTable() {
                 filterFn: customStartDateFilter,
                 cell: ({ row }) => {
                     return (
-                        <div className="text-center text-xl">
-                            {row.original.startDate.toString().split('T')[1] +
-                                ' : ' +
-                                row.original.startDate.toString().split('T')[0]}
+                        <div className="text-center text-lg">
+                            {dayjs(row.original.startDate).format('DD/MM/YYYY')}
                         </div>
                     );
                 },
@@ -146,10 +146,8 @@ export default function ListTable() {
                 header: () => <div className="text-center">Ngày kết thúc</div>,
                 cell: ({ row }) => {
                     return (
-                        <div className="text-center text-xl">
-                            {row.original.endDate.toString().split('T')[1] +
-                                ' : ' +
-                                row.original.endDate.toString().split('T')[0]}
+                        <div className="text-center text-lg">
+                            {dayjs(row.original.endDate).format('DD/MM/YYYY')}
                         </div>
                     );
                 },
@@ -164,21 +162,21 @@ export default function ListTable() {
                                 <Tag
                                     color={
                                         row.original.status == 0
-                                            ? 'blue'
+                                            ? '#1e3a8a'
                                             : row.original.status == 1
-                                            ? 'green'
-                                            : row.original.status == 2
-                                            ? 'gold'
-                                            : 'red'
+                                                ? '#00c11d'
+                                                : row.original.status == 2
+                                                    ? '#ea580c'
+                                                    : '#dc2626'
                                     }
                                 >
                                     {row.original.status == 0
                                         ? 'Sắp diễn ra'
                                         : row.original.status == 1
-                                        ? 'Đang diễn ra'
-                                        : row.original.status == 2
-                                        ? 'Đã kết thúc'
-                                        : 'Đã hủy'}
+                                            ? 'Đang diễn ra'
+                                            : row.original.status == 2
+                                                ? 'Đã kết thúc'
+                                                : 'Đã hủy'}
                                 </Tag>
                             }
                         </div>
@@ -314,10 +312,16 @@ export default function ListTable() {
     return (
         <>
             <ToastContainer />
-            <div className="bg-slate-50 rounded-md p-3 pb-6 shadow-lg">
+            <div className="bg-slate-50 rounded-md p-3 pb-6 shadow-lg" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                <div className='mb-4'>
+                    <p className='text-2xl font-bold' style={{ color: '#1e3a8a' }}>
+                        <FontAwesomeIcon icon={faGift as any} style={{ marginRight: '12px' }} />
+                        Sự kiện giảm giá
+                    </p>
+                </div>
                 <div className="grid grid-cols-2 items-center my-3 gap-5 border">
                     <div className="flex flex-col w-full">
-                        <p className="mb-1 font-semibold text-xl">Trạng thái</p>
+                        <p className="mb-1 font-semibold text-base" style={{ color: '#1e3a8a' }}>Trạng thái</p>
                         <div className="min-w-[240px]">
                             <Select
                                 className=" w-2/3"
@@ -340,7 +344,7 @@ export default function ListTable() {
                         </div>
                     </div>
                     <div>
-                        <p className="mb-1 font-semibold text-xl">Tìm kiếm theo mã</p>
+                        <p className="mb-1 font-semibold text-base" style={{ color: '#1e3a8a' }}>Tìm kiếm theo mã</p>
                         <Input
                             placeholder="mã..."
                             value={(table.getColumn('code')?.getFilterValue() as string) ?? ''}
@@ -349,7 +353,7 @@ export default function ListTable() {
                         />
                     </div>
                     <div>
-                        <p className="mb-1 font-semibold text-xl">Tìm kiếm theo tên</p>
+                        <p className="mb-1 font-semibold text-base" style={{ color: '#1e3a8a' }}>Tìm kiếm theo tên</p>
                         <Input
                             placeholder="tên..."
                             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -358,10 +362,11 @@ export default function ListTable() {
                         />
                     </div>
                     <div>
-                        <p className="mb-1 font-semibold text-xl">Khoảng ngày</p>
+                        <p className="mb-1 font-semibold text-base" style={{ color: '#1e3a8a' }}>Khoảng ngày</p>
                         <RangePicker
                             placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                             className=" w-2/3"
+                            format="DD/MM/YYYY"
                             onChange={(value) => {
                                 if (value && value[0] && value[1]) {
                                     table.getColumn('startDate').setFilterValue(value[0].hour(0).minute(0).second(0));
@@ -377,6 +382,7 @@ export default function ListTable() {
 
                 <div className="flex gap-5 items-center justify-between mt-4">
                     <Button
+                        style={{ backgroundColor: '#ea580c', borderColor: '#ea580c' }}
                         type="primary"
                         variant="ountline"
                         onClick={() => {
@@ -389,8 +395,8 @@ export default function ListTable() {
                     {/* {Recover()} */}
                 </div>
             </div>
-            <div className="rounded-md border bg-slate-50 p-3 shadow-lg flex flex-col gap-3">
-                <p>Danh sách sự kiện giảm giá</p>
+            <div className="rounded-md border bg-slate-50 p-3 shadow-lg flex flex-col gap-3" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                <p className='text-2xl font-bold' style={{ color: '#1e3a8a' }}>Danh sách sự kiện giảm giá</p>
                 <div className="h-[2px] bg-slate-600"></div>
                 {Table(table, flexRender, columns)}
             </div>

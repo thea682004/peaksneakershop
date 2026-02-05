@@ -5,6 +5,7 @@ import axios from 'axios';
 import { baseUrl, makeid, baseUrlV3 } from '~/lib/functional';
 import { useNavigate } from 'react-router-dom';
 import ListDetailProduct from '~/components/promotion/ListDetailProduct'
+import ProductDetailTable from '~/components/promotion/ProductDetailTable'
 import { useAppSelector } from '~/redux/storage';
 import ReduxProvider from '~/redux/provider'
 import { useDispatch } from 'react-redux';
@@ -155,7 +156,7 @@ function EditPage() {
                     </label>
                     <label>
                         <p className='mb-1 text-xl text-slate-600'>Ngày bắt đầu {"->"} ngày kết thúc</p>
-                        <RangePicker className='w-full' value={date} onChange={(val) => { setDate(val) }} showTime />
+                        <RangePicker className='w-full' value={date} onChange={(val) => { setDate(val) }} showTime format="DD/MM/YYYY HH:mm:ss" />
                     </label>
                     <Button className='mt-3' type='primary' onClick={() => { handleSubmitForm() }}>
                         {'Thêm mới đợt giảm giá'}
@@ -165,8 +166,39 @@ function EditPage() {
                     <p className='text-2xl font-semibold'>Danh sách sản phẩm</p>
                     <div className='h-[2px] bg-slate-600'></div>
                     <ListDetailProduct data={listProduct} />
+
                 </div>
             </div>
+            <div className='w-full bg-slate-50 px-3 py-3 rounded-lg border border-slate-600 mt-5'>
+                <p className='text-2xl font-semibold'>Danh sách chi tiết sản phẩm</p>
+            </div>
+            {(() => {
+                const allVariations = listProduct
+                    .filter(product => {
+                        const selectedItem = listSelectedProduct.find(item => item.id === product.id);
+                        return selectedItem && selectedItem.selected;
+                    })
+                    .flatMap(product =>
+                        product.lstProductDetails.map(detail => ({
+                            ...detail,
+                            parentId: product.id,
+                            name: product.name
+                        }))
+                    );
+
+                if (allVariations.length > 0) {
+                    return (
+                        <div className='w-full bg-slate-50 px-3 py-3 rounded-lg border border-slate-600 mt-5'>
+                            <p className='text-2xl font-semibold'>Danh sách biến thể</p>
+                            <div className='h-[2px] bg-slate-600 mb-3'></div>
+                            <ProductDetailTable
+                                data={allVariations}
+                            />
+                        </div>
+                    );
+                }
+                return null;
+            })()}
         </div>
     )
 }

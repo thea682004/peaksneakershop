@@ -28,6 +28,9 @@ import { ToastContainer, toast } from 'react-toastify'
 import ListDeleted from './listDeleted'
 import { set } from '../../redux/features/voucher-deleted'
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
+const dayjs = require('dayjs');
 
 const { confirm } = Modal;
 export default function ListTable() {
@@ -102,27 +105,27 @@ export default function ListTable() {
                     </div>
                 )
             },
-            cell: ({ row }) => <div className="lowercase text-xl">{row.original.fullName}</div>,
+            cell: ({ row }) => <div className="lowercase text-lg">{row.original.fullName}</div>,
         },
         {
             accessorKey: "phone",
             header: () => <div className="text-center">Số điện thoại</div>,
             cell: ({ row }) => {
-                return <div className='flex justify-center text-xl'>{row.original.phone}</div>
+                return <div className='flex justify-center text-lg'>{row.original.phone}</div>
             },
         },
         {
             accessorKey: "email",
             header: () => <div className="text-center">Email</div>,
             cell: ({ row }) => {
-                return <div className='flex justify-center text-xl'>{row.original.email}</div>
+                return <div className='flex justify-center text-lg'>{row.original.email}</div>
             },
         },
         {
             accessorKey: "birthday",
             header: () => <div className="text-center">Ngày sinh</div>,
             cell: ({ row }) => {
-                return <div className='flex justify-center text-xl'>{row.original.birthday ? row.original.birthday.toString().split("T")[0] : ''}</div>
+                return <div className='flex justify-center text-lg'>{row.original.birthday ? dayjs(row.original.birthday).format('DD/MM/YYYY') : ''}</div>
             },
         },
         {
@@ -219,18 +222,21 @@ export default function ListTable() {
 
     return (
         <>
-            <div className="w-full rounded-md bg-white p-6 flex flex-col gap-3">
+            <div className="w-full rounded-md bg-white p-6 flex flex-col gap-3" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
                 <ToastContainer />
                 <div className='flex justify-between items-center'>
-                    <p className='text-2xl font-bold'>Khách hàng</p>
+                    <p className='text-2xl font-bold' style={{ color: '#1e3a8a' }}>
+                        <FontAwesomeIcon icon={faUsers as any} style={{ marginRight: '12px' }} />
+                        Khách hàng
+                    </p>
                 </div>
                 <div className='bg-slate-600 h-[2px]'></div>
-                <div className='rounded-md mb-3 p-3 shadow-md'>
+                <div className='rounded-md mb-3 p-3 shadow-md' style={{ backgroundColor: '#fefce8' }}>
                     <div className='grid grid-cols-2 gap-3 my-3'>
                         <div className='my-2'>
-                            <p className='font-semibold mb-2'>Họ và tên</p>
+                            <p className='font-semibold mb-2 text-base'>Họ và tên</p>
                             <Input
-                                placeholder="tìm kiếm theo tên"
+                                placeholder="Tìm kiếm theo tên"
                                 value={(table.getColumn("fullName")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("fullName")?.setFilterValue(event.target.value)
@@ -239,9 +245,9 @@ export default function ListTable() {
                             />
                         </div>
                         <div className='my-2'>
-                            <p className='font-semibold mb-2'>Email</p>
+                            <p className='font-semibold mb-2 text-base'>Email</p>
                             <Input
-                                placeholder="tìm kiếm theo email"
+                                placeholder="Tìm kiếm theo email"
                                 value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("email")?.setFilterValue(event.target.value)
@@ -250,9 +256,9 @@ export default function ListTable() {
                             />
                         </div>
                         <div className='my-2'>
-                            <p className='font-semibold mb-2'>Số điện thoại</p>
+                            <p className='font-semibold mb-2 text-base'>Số điện thoại</p>
                             <Input
-                                placeholder="tìm kiếm theo số điện thoại"
+                                placeholder="Tìm kiếm theo số điện thoại"
                                 value={(table.getColumn("phone")?.getFilterValue() as string) ?? ""}
                                 onChange={(event) =>
                                     table.getColumn("phone")?.setFilterValue(event.target.value)
@@ -262,12 +268,12 @@ export default function ListTable() {
                         </div>
                     </div>
                     <div className='flex gap-2 items-center justify-between py-4'>
-                        <Button type="primary" onClick={() => { navigate('/user/customer/add') }} variant="outline">Thêm khách hàng mới</Button>
+                        <Button style={{ backgroundColor: '#ea580c', borderColor: '#ea580c' }} type="primary" onClick={() => { navigate('/user/customer/add') }} variant="outline">Thêm khách hàng mới</Button>
                         {Recover()}
                     </div>
                 </div>
-                <div className="rounded-md border border-slate-900 bg-slate-50 flex flex-col gap-4 mt-2 p-3">
-                    <h4>Danh sách khách hàng</h4>
+                <div className="rounded-md border border-slate-900 bg-slate-50 flex flex-col gap-4 mt-2 p-3" style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                    <h4 style={{ color: '#1e3a8a' }}>Danh sách khách hàng</h4>
                     <div className='bg-slate-600 h-[2px]'></div>
                     {Table(table, flexRender, columns)}
                 </div>

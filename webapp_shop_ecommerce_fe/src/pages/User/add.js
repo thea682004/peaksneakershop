@@ -13,12 +13,15 @@ import {
     FormMessage,
 } from "~/components/ui/form"
 import { IoArrowBackSharp } from "react-icons/io5";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ToastContainer, toast } from 'react-toastify';
 import { useDropzone } from 'react-dropzone'
 import { QrReader } from "react-qr-reader";
+import QrScanner from 'qr-scanner';
 import { regex } from '../../lib/functional';
 
 const { TextArea } = Input
@@ -27,7 +30,7 @@ const formSchema = z.object({
     fullName: z.string().min(2, {
         message: "tên tối thiểu phải có 2 ký tự",
     }),
-    gender: z.enum('0', '1'),
+    gender: z.enum(['0', '1']),
     commune: z.string(),
     district: z.string(),
     province: z.string(),
@@ -75,16 +78,8 @@ export default function Add() {
                 }
             }).then(res => {
                 let listFilteredDistrict = res.data.data.filter(dis => dis.DistrictID != 3451);
-                setAddDistrict(listFilteredDistrict[0])
                 setListDistricts(listFilteredDistrict);
-                axios.get(`https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${listFilteredDistrict[0].DistrictID}`, {
-                    headers: {
-                        token: token
-                    }
-                }).then(resp => {
-                    setListWards(resp.data.data);
-                    setAddWard(resp.data.data[0].WardName);
-                })
+                // Removed auto-select default district to avoid overwriting QR scan result
             })
         }
     }, [addProvince])
@@ -97,7 +92,7 @@ export default function Add() {
                 }
             }).then(res => {
                 setListWards(res.data.data);
-                setAddWard(res.data.data[0].WardName)
+                // Removed auto-select default ward
             })
         }
     }, [addDistrict])
@@ -243,26 +238,132 @@ export default function Add() {
         }
     };
 
+    const handleImageScan = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            const result = await QrScanner.scanImage(file);
+            console.log("Image Scan Result:", result);
+            ScanResult({ text: result });
+        } catch (error) {
+            console.error(error);
+            toast.error("Không tìm thấy mã QR trong ảnh! Hãy thử ảnh rõ nét hơn.");
+        }
+    };
+
+    function cleanName(str) {
+        if (!str) return "";
+        return str.toLowerCase()
+            .replace(/^tỉnh\s+|^thành phố\s+|^tp\.\s+|^tp\s+/, "")
+            .replace(/^huyện\s+|^quận\s+|^thị xã\s+|^thành phố\s+|^tp\.\s+|^tp\s+/, "")
+            .replace(/^xã\s+|^phường\s+|^thị trấn\s+/, "")
+            .trim();
+    }
+
     function ScanResult(result) {
-        if (result) {
-            if (result.text) {
+        if (result && result.text) {
+            const resultText = result.text;
+            const parts = resultText.split('|');
+
+            if (parts.length >= 6) {
                 setWebScan(result);
-                const resultText = result.text;
-                const id = resultText.split("||")[0]
-                const name = resultText.split("||")[1].split("|")[0]
-                const birthday = dayjs(resultText.split("||")[1].split("|")[1], 'DDMMYYYY')
-                const gender = resultText.split("||")[1].split("|")[2] == "Nam" ? false : true;
-                const province = resultText.split("||")[1].split("|")[3].split(", ")[3]
-                const district = resultText.split("||")[1].split("|")[3].split(", ")[2]
-                const commune = resultText.split("||")[1].split("|")[3].split(", ")[1]
-                const detail = resultText.split("||")[1].split("|")[3].split(", ")[0]
-                form.setValue("birthday", birthday)
-                form.setValue("detail", detail)
-                form.setValue("fullName", name)
-                form.setValue("gender", gender)
-                setAddDistrict(district);
-                setAddProvince(province);
-                setAddWard(commune);
+
+                const name = parts[2];
+                const birthdayStr = parts[3];
+                const genderStr = parts[4];
+                const addressFull = parts[5];
+
+                const birthday = dayjs(birthdayStr, 'DDMMYYYY');
+                const gender = genderStr === "Nam" ? "0" : "1";
+
+                form.setValue("birthday", birthday);
+                form.setValue("fullName", name);
+                form.setValue("gender", gender);
+
+                // Address Async Logic
+                const addressParts = addressFull.split(',').map(s => s.trim());
+                if (addressParts.length >= 3) {
+                    const provinceNameRaw = addressParts[addressParts.length - 1];
+                    const districtNameRaw = addressParts[addressParts.length - 2];
+                    const communeNameRaw = addressParts[addressParts.length - 3];
+                    const detailAddr = addressParts.slice(0, addressParts.length - 3).join(', ');
+
+                    form.setValue("detail", detailAddr);
+
+                    const provinceNameClean = cleanName(provinceNameRaw);
+                    const districtNameClean = cleanName(districtNameRaw);
+                    const communeNameClean = cleanName(communeNameRaw);
+
+                    // 1. Find Province
+                    if (listProvince && listProvince.length > 0) {
+                        // Priority 1: Exact match after clean
+                        let foundProvince = listProvince.find(p => {
+                            const pName = cleanName(p.ProvinceName);
+                            // Check for special cases like "Thừa Thiên Huế" vs "Thừa Thiên - Huế"
+                            return pName === provinceNameClean ||
+                                pName.replace(/-/g, " ") === provinceNameClean.replace(/-/g, " ");
+                        });
+
+                        // Priority 2: Contains
+                        if (!foundProvince) {
+                            foundProvince = listProvince.find(p => {
+                                const pName = cleanName(p.ProvinceName);
+                                return pName.includes(provinceNameClean) || provinceNameClean.includes(pName);
+                            });
+                        }
+
+                        if (foundProvince) {
+                            setAddProvince(foundProvince);
+
+                            // 2. Fetch Districts
+                            axios.get(`https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${foundProvince.ProvinceID}`, {
+                                headers: { token: token }
+                            }).then(res => {
+                                const districts = res.data.data;
+                                setListDistricts(districts);
+
+                                let foundDistrict = districts.find(d => cleanName(d.DistrictName) === districtNameClean);
+
+                                if (!foundDistrict) {
+                                    foundDistrict = districts.find(d => {
+                                        const dName = cleanName(d.DistrictName);
+                                        return dName.includes(districtNameClean) || districtNameClean.includes(dName);
+                                    });
+                                }
+
+                                if (foundDistrict) {
+                                    setAddDistrict(foundDistrict);
+
+                                    // 3. Fetch Wards
+                                    axios.get(`https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${foundDistrict.DistrictID}`, {
+                                        headers: { token: token }
+                                    }).then(res => {
+                                        const wards = res.data.data;
+                                        setListWards(wards);
+
+                                        let foundWard = wards.find(w => cleanName(w.WardName) === communeNameClean);
+
+                                        if (!foundWard) {
+                                            foundWard = wards.find(w => {
+                                                const wName = cleanName(w.WardName);
+                                                return wName.includes(communeNameClean) || communeNameClean.includes(wName);
+                                            });
+                                        }
+
+                                        if (foundWard) {
+                                            setAddWard(foundWard.WardName);
+                                        }
+                                    }).catch(console.error);
+                                }
+                            }).catch(console.error);
+                        }
+                    }
+                } else {
+                    form.setValue("detail", addressFull);
+                }
+
+                toast.success("Đã quét thông tin CCCD!");
+                setIsModalOpen(false);
             }
         }
     }
@@ -279,6 +380,34 @@ export default function Add() {
                             <div className='flex gap-2 items-center'>
                                 <div className='text-2xl cursor-pointer flex items-center' onClick={() => { navigate('/user/staff') }}><IoArrowBackSharp /></div>
                                 <p className='text-2xl font-bold'>Thông tin nhân viên</p>
+                                <Button type="primary" onClick={() => setIsModalOpen(true)} className='ml-auto'>
+                                    Quét CCCD
+                                </Button>
+                                <Modal title="Quét mã QR CCCD" open={isModalOpen} onOk={() => { setIsModalOpen(false) }} onCancel={() => { setIsModalOpen(false) }}>
+                                    <QrReader
+                                        delay={600}
+                                        onError={camError}
+                                        onResult={ScanResult}
+                                        style={{ width: "100%" }}
+                                        facingMode="user"
+                                        legacyMode={false}
+                                    />
+                                    <div className="mt-4 flex flex-col items-center border-t pt-4">
+                                        <p className="mb-2 font-semibold text-gray-700">Hoặc tải ảnh lên từ thiết bị:</p>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageScan}
+                                            className="block w-full text-sm text-slate-500
+                                               file:mr-4 file:py-2 file:px-4
+                                               file:rounded-full file:border-0
+                                               file:text-sm file:font-semibold
+                                               file:bg-blue-50 file:text-blue-700
+                                               hover:file:bg-blue-100
+                                               cursor-pointer"
+                                        />
+                                    </div>
+                                </Modal>
                             </div>
                             <div className='bg-slate-700 h-[2px] mt-1'></div>
                             <div className='w-full flex flex-col gap-5'>
@@ -294,13 +423,14 @@ export default function Add() {
                                     {isThumbnailDragActive ? (
                                         <p className="text-red-500">Thả ảnh tại đây.</p>
                                     ) : (
-                                        <div className="flex gap-1">
+                                        <div className="flex gap-1 justify-center items-center w-full h-full">
                                             {originalThumbnail ? (
-                                                <img src={URL.createObjectURL(originalThumbnail.file)} alt='' className='w-full aspect-square rounded-full'></img>
+                                                <img src={URL.createObjectURL(originalThumbnail.file)} alt='' className='w-full h-full aspect-square rounded-full object-cover shadow-sm'></img>
                                             ) : (
-                                                <>
-                                                    <p>chọn ảnh</p>
-                                                </>
+                                                <div className='flex flex-col items-center justify-center text-gray-500 hover:text-blue-500 transition-colors gap-2'>
+                                                    <FontAwesomeIcon icon={faCloudUploadAlt} className='text-3xl mb-1' />
+                                                    <p className='font-semibold text-sm'>Chọn ảnh</p>
+                                                </div>
                                             )}
                                         </div>
                                     )}
@@ -330,13 +460,28 @@ export default function Add() {
                                 <Modal title="Quét mã QR" open={isModalOpen} onOk={() => { setIsModalOpen(false) }} onCancel={() => { }}>
                                     <QrReader
                                         delay={600}
-                                        facingMode="user"
                                         onError={camError}
                                         chooseDeviceId={"2"}
                                         onResult={ScanResult}
                                         style={{ width: "100%" }}
+                                        facingMode="user"
                                         legacyMode={false}
                                     />
+                                    <div className="mt-4 flex flex-col items-center border-t pt-4">
+                                         <p className="mb-2 font-semibold text-gray-700">Hoặc tải ảnh lên từ thiết bị:</p>
+                                         <input 
+                                             type="file" 
+                                             accept="image/*" 
+                                             onChange={handleImageScan} 
+                                             className="block w-full text-sm text-slate-500
+                                               file:mr-4 file:py-2 file:px-4
+                                               file:rounded-full file:border-0
+                                               file:text-sm file:font-semibold
+                                               file:bg-blue-50 file:text-blue-700
+                                               hover:file:bg-blue-100
+                                               cursor-pointer"
+                                         />
+                                     </div>
                                     <p>{webScan && webScan.text}</p>
                                 </Modal>
                             </div> */}
@@ -397,7 +542,7 @@ export default function Add() {
                                                 <FormLabel className="">Ngày sinh</FormLabel>
                                                 <FormControl>
                                                     <div className='mt-2'>
-                                                        <DatePicker {...field} className='' placeholder='ngày sinh' needConfirm />
+                                                        <DatePicker {...field} className='' placeholder='ngày sinh' needConfirm format="DD/MM/YYYY" />
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage />

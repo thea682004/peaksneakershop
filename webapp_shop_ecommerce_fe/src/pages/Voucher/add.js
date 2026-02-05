@@ -185,9 +185,9 @@ const VoucherPage = () => {
 
     useEffect(() => {
         let t = selectedCustomer.every(cus => cus.selected)
-        if(t){
+        if (t) {
             setVoucherType("0");
-        }else{
+        } else {
             setVoucherType("1");
         }
     }, [selectedCustomer])
@@ -345,7 +345,7 @@ const VoucherPage = () => {
                                     <div className='mt-1'>
                                         <FormLabel>Ngày bắt đầu {"->"} Ngày kết thúc</FormLabel>
                                         <div className='mt-3'>
-                                            <RangePicker className='w-full' value={date} onChange={(val) => { if (val) { setDate(val) } }} showTime />
+                                            <RangePicker className='w-full' value={date} onChange={(val) => { if (val) { setDate(val) } }} showTime format="DD/MM/YYYY HH:mm:ss" />
                                         </div>
                                     </div>
                                     <div className='flex gap-4'>

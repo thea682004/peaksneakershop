@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useOrderData } from '~/provider/OrderDataProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faPlus, faStore } from '@fortawesome/free-solid-svg-icons';
 
 
 function Order() {
@@ -116,9 +116,11 @@ function Order() {
     <>
 
       <div className=''>
-        <h3>
-          Bán Hàng Tại Quầy
-        </h3>
+        <div className='p-4 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+          <h3 style={{ color: '#1e3a8a', fontWeight: 'bold' }}>
+            <FontAwesomeIcon icon={faStore} style={{ marginRight: '10px' }} />  Bán hàng tại quầy
+          </h3>
+        </div>
         <div className='mt-6 bg-white p-4 shadow-lg'>
           <div >
             <div>

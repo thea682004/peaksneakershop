@@ -29,13 +29,7 @@ export const selectedData = createSlice({
                     parentItem.children.push({ id: id, selected: value, disable: false })
                 }
             }
-            state.value.selected.forEach(item => {
-                if (item.children.some(child => !child.selected)) {
-                    item.selected = false;
-                } else {
-                    item.selected = true;
-                }
-            });
+
         },
         disableChildren: (state, action: PayloadAction<{ parentId: number; id: number; disable: boolean }>) => {
             const { parentId, id, disable } = action.payload;
@@ -63,7 +57,7 @@ export const selectedData = createSlice({
                 selectedItem.selected = selected;
                 // If the parent is selected, select all children
                 if (selected) {
-                    selectedItem.children.forEach(child => (child.selected = true));
+                    selectedItem.children.forEach(child => (child.selected = false));
                 } else {
                     // If the parent is not selected, deselect all children
                     selectedItem.children.forEach(child => (child.selected = false));
@@ -72,11 +66,7 @@ export const selectedData = createSlice({
                 state.value.selected.push({ id: id, children: [], selected: true });
             }
             // Check if all children are selected, if not, deselect the parent
-            state.value.selected.forEach(item => {
-                if (item.children.some(child => !child.selected)) {
-                    item.selected = false;
-                }
-            });
+
         },
         toggleAll: (state) => {
             state.value.selected.forEach(item => {

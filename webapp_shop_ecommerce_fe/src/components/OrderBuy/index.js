@@ -96,14 +96,14 @@ function OrderBuy({ fetchAddBillNew }) {
         const dataTable = lstDataVoucher?.filter(voucher => {
             // Lọc theo tên ,phone
             if (debounceSearch &&
-              !(voucher?.name?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
-              voucher?.code?.toLowerCase().includes(debounceSearch.toLowerCase())
-              )) {
-              return false;
+                !(voucher?.name?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
+                    voucher?.code?.toLowerCase().includes(debounceSearch.toLowerCase())
+                )) {
+                return false;
             }
-     
+
             return true;
-          })
+        })
         fillDateTableVoucher(dataTable)
     }, [lstDataVoucher, totalPrice])
 
@@ -181,7 +181,7 @@ function OrderBuy({ fetchAddBillNew }) {
     const handleInputSearch = (e) => {
         console.log(e.target.value);
         setSearch(e.target.value);
-      }
+    }
     return (
         <>
             <div className="">
@@ -223,9 +223,9 @@ function OrderBuy({ fetchAddBillNew }) {
 
                         <Modal footer={null} width={1000} title="Chọn phiếu giảm giá" open={isModalOpenVoucher} onOk={handleOkVoucher} onCancel={handleCancelVoucher}>
                             <div className='mt-10 mb-8 w-1/3'>
-                                <Input allowClear placeholder="Tìm kiếm giảm giá" prefix={<SearchOutlined />} 
-                                value={search} onChange={handleInputSearch}
-                                 />
+                                <Input allowClear placeholder="Tìm kiếm giảm giá" prefix={<SearchOutlined />}
+                                    value={search} onChange={handleInputSearch}
+                                />
 
                             </div>
                             <div>
@@ -298,6 +298,8 @@ function OrderBuy({ fetchAddBillNew }) {
                                     disabled={isDelivery || paymentMethods == 1}
                                     placeholder="Nhập Tiền Khách Đưa"
                                     suffix="VNĐ"
+                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
                                     value={paymentCustomer}
                                     onChange={(value) => setDataPaymentCustomer(value)}
                                 />

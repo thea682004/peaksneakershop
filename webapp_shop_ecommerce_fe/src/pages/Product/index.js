@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faBox } from '@fortawesome/free-solid-svg-icons';
 import { UploadOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 const columns = [
     {
         title: '#',
@@ -38,27 +39,27 @@ const columns = [
         key: 'category',
     },
     {
-        title: 'Chất Liệu',
+        title: 'Chất liệu',
         dataIndex: 'material',
         key: 'material',
     },
     {
-        title: 'Phong Cách',
+        title: 'Phong cách',
         dataIndex: 'style',
         key: 'style',
     },
     {
-        title: 'Thương Hiệu',
+        title: 'Thương hiệu',
         dataIndex: 'brand',
         key: 'brand',
     },
     {
-        title: 'Trạng Thái',
+        title: 'Trạng thái',
         dataIndex: 'status',
         key: 'status',
     },
     {
-        title: 'Action',
+        title: 'Hành động',
         dataIndex: 'action',
         key: 'action',
 
@@ -86,22 +87,22 @@ const columnsDeleted = [
         key: 'category',
     },
     {
-        title: 'Chất Liệu',
+        title: 'Chất liệu',
         dataIndex: 'material',
         key: 'material',
     },
     {
-        title: 'Phong Cách',
+        title: 'Phong cách',
         dataIndex: 'style',
         key: 'style',
     },
     {
-        title: 'Thương Hiệu',
+        title: 'Thương hiệu',
         dataIndex: 'brand',
         key: 'brand',
     },
     {
-        title: 'Action',
+        title: 'Hành động',
         dataIndex: 'action',
         key: 'action',
 
@@ -558,175 +559,192 @@ const Product = () => {
         }
     };
     return (
-        <div className=''>
-            <div>
-                <h3>
-                    Quản Lý Sản Phẩm
-                </h3>
-            </div>
-            <div className='bg-white p-4 mt-4 mb-10 shadow-lg'>
-                <div className='mb-6 mt-2 '>
-                    <div className='text-[16px] font-semibold'><FilterOutlined className='mr-2'></FilterOutlined>Bộ Lọc</div>
+        <>
+            <style>
+                {`
+                  .ant-radio-checked .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                    background-color: #1e3a8a !important;
+                  }
+                  .ant-radio:hover .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                  }
+                  .ant-radio-wrapper:hover .ant-radio-inner {
+                    border-color: #1e3a8a !important;
+                  }
+                `}
+            </style>
+            <div className=''>
+                <div className='p-4 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                    <h3 style={{ color: '#1e3a8a', marginBottom: 0 }}>
+                        <FontAwesomeIcon icon={faBox} style={{ marginRight: '12px' }} />
+                        Quản lý sản phẩm
+                    </h3>
                 </div>
-                <div>
-                    <label>Tìm Kiếm</label>
-                    <div className='grid grid-cols-7 gap-4 my-4'>
-                        <Input className='col-span-6' placeholder="Tìm Kiếm Sản Phẩm" onChange={onChangeSearch} />
-
-                        <Link to={`/product/add`} ><Button type='primary'>Thêm Mới Sản Phẩm</Button></Link>
-                    </div>
-                </div>
-
-                <div className='grid grid-cols-4 gap-4 my-4'>
-                    <div>
-                        <label>Loại</label>
-                        <Select className="w-full mt-4"
-                            defaultValue=""
-                            onChange={handleChangeCategory}
-                            options={optionCategory}
-                        />
-                    </div>
-
-                    <div>
-                        <label>Chất Liệu</label>
-                        <Select className="w-full mt-4"
-                            defaultValue=""
-                            onChange={handleChangeMaterial}
-                            options={optionMaterial}
-                        />
-                    </div>
-
-                    <div>
-                        <label>Phong Cách</label>
-                        <Select className="w-full mt-4"
-                            defaultValue=""
-                            onChange={handleChangeStyle}
-                            options={optionStyle}
-                        />
-                    </div>
-
-                    <div>
-                        <label>Thương Hiệu</label>
-                        <Select className="w-full mt-4"
-                            defaultValue=""
-                            onChange={handleChangeBrand}
-                            options={optionBrand}
-                        />
-                    </div>
-
-                </div>
-
-
-                <div className=''>
-                    <label>Trạng Thái</label>
-                    <div className='my-4 font-normal'>
-                        <Radio.Group onChange={onChangeRadio} value={valueRadio}>
-                            <Radio value={""}>Tất Cả</Radio>
-                            <Radio value={"0"}>Đang Bán</Radio>
-                            <Radio value={"1"}>Ngừng Bán</Radio>
-                        </Radio.Group>
-                    </div>
-                </div>
-
-            </div>
-            <div className='bg-white p-4 mt-4 mb-20 shadow-lg'>
-                <div className='flex justify-between	'>
-
+                <div className='bg-white p-4 mt-4 mb-10 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
                     <div className='mb-6 mt-2 '>
-                        <div className='text-[16px] font-semibold'>Danh Sách Sản Phẩm</div>
+                        <div className='text-base font-semibold' style={{ color: '#1e3a8a' }}><FilterOutlined className='mr-2'></FilterOutlined>Bộ lọc</div>
                     </div>
-                    <div className='mb-6 mt-2' >
-                        <Button type="primary" onClick={() => {
-                            setOpenImportExcel(true)
-                        }} >
-                            Import Excell
-                        </Button>
-                        <Button type="primary" className='ml-4' onClick={dowloadExcel} disabled={!hasSelected} loading={loading}>
-                            Export Excell
-                        </Button>
-                        <Button type="primary" onClick={() => setOpen(true)} className='ml-4'>
-                            <DeleteOutlined />
-                        </Button>
-                        <>
-                            <Modal
-                                title="Sản Phẩm Đã Xóa"
-                                centered
-                                open={open}
-                                onOk={() => { }}
-                                onCancel={() => setOpen(false)}
-                                width={1000}
-                                footer={null}
-                            >
-                                <div>
-                                    <Table columns={columnsDeleted} pagination={{
-                                        pageSize: 5,
-                                    }} dataSource={dataColumDeleted} />
-                                </div>
-                            </Modal>
-                        </>
+                    <div>
+                        <label className='font-semibold' style={{ color: '#1e3a8a' }}>Tìm kiếm</label>
+                        <div className='grid grid-cols-7 gap-4 my-4'>
+                            <Input className='col-span-6' placeholder="Tìm kiếm sản phẩm" onChange={onChangeSearch} />
 
-                        <>
-                            <Modal
-                                title="Import excel"
-                                open={openImportExcel}
-                                onOk={handleUpload}
-                                onCancel={() => setOpenImportExcel(false)}
-                                width={600}
-                            >
-                                <div className='mt-10 mb-10'>
-                                    {/* <label htmlFor="image-upload" className="label"> <Button icon={<UploadOutlined />}>Click to Upload</Button></label> */}
-                                    <input type="file"
-                                        id="image-upload"
-                                        accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                        onChange={handleFileChange}
-                                        ref={inputFileRef}
-
-                                    />
-                                </div>
-                            </Modal>
-                        </>
+                            <Link to={`/product/add`} ><Button style={{ backgroundColor: '#ea580c', borderColor: '#ea580c' }} type='primary'>Thêm mới sản phẩm</Button></Link>
+                        </div>
                     </div>
+
+                    <div className='grid grid-cols-4 gap-4 my-4'>
+                        <div>
+                            <label className='font-semibold' style={{ color: '#1e3a8a' }}>Loại</label>
+                            <Select className="w-full mt-4"
+                                defaultValue=""
+                                onChange={handleChangeCategory}
+                                options={optionCategory}
+                            />
+                        </div>
+
+                        <div>
+                            <label className='font-semibold' style={{ color: '#1e3a8a' }}>Chất liệu</label>
+                            <Select className="w-full mt-4"
+                                defaultValue=""
+                                onChange={handleChangeMaterial}
+                                options={optionMaterial}
+                            />
+                        </div>
+
+                        <div>
+                            <label className='font-semibold' style={{ color: '#1e3a8a' }}>Phong cách</label>
+                            <Select className="w-full mt-4"
+                                defaultValue=""
+                                onChange={handleChangeStyle}
+                                options={optionStyle}
+                            />
+                        </div>
+
+                        <div>
+                            <label className='font-semibold' style={{ color: '#1e3a8a' }}>Thương hiệu</label>
+                            <Select className="w-full mt-4"
+                                defaultValue=""
+                                onChange={handleChangeBrand}
+                                options={optionBrand}
+                            />
+                        </div>
+
+                    </div>
+
+
+                    <div className=''>
+                        <label className='font-semibold' style={{ color: '#1e3a8a' }}>Trạng thái</label>
+                        <div className='my-4 font-normal'>
+                            <Radio.Group onChange={onChangeRadio} value={valueRadio}>
+                                <Radio value={""}>Tất cả</Radio>
+                                <Radio value={"0"}>Đang bán</Radio>
+                                <Radio value={"1"}>Ngừng bán</Radio>
+                            </Radio.Group>
+                        </div>
+                    </div>
+
                 </div>
+                <div className='bg-white p-4 mt-4 mb-20 shadow-lg' style={{ backgroundColor: '#fefce8', borderLeft: '4px solid #1e3a8a' }}>
+                    <div className='flex justify-between	'>
 
-                <Table rowSelection={rowSelection} pagination={{
-                    pageSize: 5,
-                }} columns={columns} dataSource={dataColum} />
+                        <div className='mb-6 mt-2 '>
+                            <div className='text-base font-semibold' style={{ color: '#1e3a8a' }}>Danh sách sản phẩm</div>
+                        </div>
+                        <div className='mb-6 mt-2' >
+                            <Button style={{ backgroundColor: '#1e3a8a', borderColor: '#1e3a8a' }} type="primary" onClick={() => {
+                                setOpenImportExcel(true)
+                            }} >
+                                Import Excel
+                            </Button>
+                            <Button style={{ backgroundColor: '#1e3a8a', borderColor: '#1e3a8a' }} type="primary" className='ml-4' onClick={dowloadExcel} disabled={!hasSelected} loading={loading}>
+                                Export Excel
+                            </Button>
+                            <Button style={{ backgroundColor: '#dc2626', borderColor: '#dc2626' }} type="primary" onClick={() => setOpen(true)} className='ml-4'>
+                                <DeleteOutlined />
+                            </Button>
+                            <>
+                                <Modal
+                                    title="Sản phẩm đã xóa"
+                                    centered
+                                    open={open}
+                                    onOk={() => { }}
+                                    onCancel={() => setOpen(false)}
+                                    width={1000}
+                                    footer={null}
+                                >
+                                    <div>
+                                        <Table columns={columnsDeleted} pagination={{
+                                            pageSize: 5,
+                                        }} dataSource={dataColumDeleted} />
+                                    </div>
+                                </Modal>
+                            </>
 
-                <Modal
-                    title="Xác nhận xóa"
-                    visible={modalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    okText="Xác Nhận"
-                    cancelText="Hủy"
-                >
-                    <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
-                </Modal>
-                <ToastContainer />
+                            <>
+                                <Modal
+                                    title="Import Excel"
+                                    open={openImportExcel}
+                                    onOk={handleUpload}
+                                    onCancel={() => setOpenImportExcel(false)}
+                                    width={600}
+                                >
+                                    <div className='mt-10 mb-10'>
+                                        {/* <label htmlFor="image-upload" className="label"> <Button icon={<UploadOutlined />}>Click to Upload</Button></label> */}
+                                        <input type="file"
+                                            id="image-upload"
+                                            accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            onChange={handleFileChange}
+                                            ref={inputFileRef}
 
-                {loadingUpdate && (
-
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            zIndex: 1,
-                            backgroundColor: 'rgba(000, 000, 000, 0.08)',
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-
-                        }}
-                    >
-                        <Spin size="large" tip="product..." />
+                                        />
+                                    </div>
+                                </Modal>
+                            </>
+                        </div>
                     </div>
-                )}
+
+                    <Table rowSelection={rowSelection} pagination={{
+                        pageSize: 5,
+                    }} columns={columns} dataSource={dataColum} />
+
+                    <Modal
+                        title="Xác nhận xóa"
+                        visible={modalVisible}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        okText="Xác Nhận"
+                        cancelText="Hủy"
+                    >
+                        <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+                    </Modal>
+                    <ToastContainer />
+
+                    {loadingUpdate && (
+
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                zIndex: 1,
+                                backgroundColor: 'rgba(000, 000, 000, 0.08)',
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+
+                            }}
+                        >
+                            <Spin size="large" tip="product..." />
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

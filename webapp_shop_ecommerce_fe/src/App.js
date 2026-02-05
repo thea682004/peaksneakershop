@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import React from 'react';
 import { privateRouter, publicRouter } from '~/routes';
 import DefaultLayout from './components/Layout/DefaultLayout';
+import PrivateRoute from './components/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './global.css'
 
 
@@ -11,6 +14,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop></ScrollToTop>
+      <ToastContainer autoClose={3000} />
       <div className="App ">
         {/* <DefaultLayout> */}
         <Routes>
@@ -37,9 +41,11 @@ function App() {
 
               return (
                 <Route key={index} path={route.path} element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  </PrivateRoute>
                 } />
               );
             }
